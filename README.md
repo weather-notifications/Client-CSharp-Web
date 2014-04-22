@@ -52,6 +52,10 @@ The full quick start can be found at: https://www.calq.io/docs/client/csharp-web
 
 The reference can be found at:  https://www.calq.io/docs/client/csharp-web/reference
 
+License
+--------
+
+[Licensed under the Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 
 

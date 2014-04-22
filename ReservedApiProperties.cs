@@ -7,7 +7,7 @@
 //
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is 
 //  distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-//  implied. See the License for the specific language governing permissions andlimitations under the 
+//  implied. See the License for the specific language governing permissions and limitations under the 
 //  License.
 
 using System;
@@ -35,12 +35,12 @@ namespace Calq.Client.Web
         public const string IpAddress = "ip_address";
 
         /// <summary>
-        /// The previous unique id of an actor when transfering.
+        /// The previous unique id of an actor when transferring.
         /// </summary>
         public const string OldActor = "old_actor";
 
         /// <summary>
-        /// The new unique id of an actor when transfering.
+        /// The new unique id of an actor when transferring.
         /// </summary>
         public const string NewActor = "new_actor";
 
