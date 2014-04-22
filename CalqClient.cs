@@ -7,7 +7,7 @@
 //
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is 
 //  distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-//  implied. See the License for the specific language governing permissions andlimitations under the 
+//  implied. See the License for the specific language governing permissions and limitations under the 
 //  License.
 
 using System;
@@ -123,7 +123,7 @@ namespace Calq.Client.Web
             }
             var request = HttpContext.Current.Request;
 
-            CalqClient client = new CalqClient(Guid.NewGuid().ToString(), writeKey);    // Guid will be overwritten by parse state if valid
+            CalqClient client = new CalqClient(Guid.NewGuid().ToString("N"), writeKey);    // Guid will be overwritten by parse state if valid
             client.IsAnon = true;
             var cookie = request.Cookies.Get(CalqClient.CalqClientCookieName);
             if(cookie != null)
@@ -423,6 +423,11 @@ namespace Calq.Client.Web
         {
             if (actor != Actor)
             {
+                if(!IsAnon)
+                {
+                    throw (new ApiException("Identify must not be called more than once for the same user."));
+                }
+                
                 var oldActor = Actor;
                 Actor = actor;
                 // Need to issue transfer only if we have sent actions with this client
@@ -461,11 +466,12 @@ namespace Calq.Client.Web
         }
 
         /// <summary>
-        /// Clearrs the current session and resets to being an anonymous user.
+        /// Clears the current session and resets to being an anonymous user.
         /// </summary>
         public void Clear()
         {
             HasTracked = false;
+            IsAnon = true;
             Actor = Guid.NewGuid().ToString();
             GlobalProperties = new Dictionary<string, object>();
 
