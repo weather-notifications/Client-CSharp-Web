@@ -135,11 +135,9 @@ namespace Calq.Client.Web
                 // New client, pass back to JS client
                 client.WriteCookieState(HttpContext.Current.Response);
             }
-            // Read this each time
-            if (!String.IsNullOrEmpty(request.UserAgent))
-            {
-                client.SetGlobalProperty(ReservedActionProperties.DeviceAgent, request.UserAgent);
-            }
+
+            // These can change each request (user agent etc)
+            client.PopulateReservedProperties(request);
 
             return client;
         }
@@ -280,6 +278,52 @@ namespace Calq.Client.Web
             catch (Newtonsoft.Json.JsonReaderException)
             {
                 // Not much we can do. We just don't parse the state and keep the default new Guid
+            }
+        }
+
+        /// <summary>
+        /// Sets any reserved properties that should be checked each request.
+        /// </summary>
+        protected void PopulateReservedProperties(HttpRequest request)
+        {
+            // Agent is enough. Server can work out OS detail from user agent (keeps code in one place)
+            if (!String.IsNullOrEmpty(request.UserAgent))
+            {
+                SetGlobalProperty(ReservedActionProperties.DeviceAgent, request.UserAgent);
+            }
+
+            // If we had UTM params, then we only record them if we have none before (first seen)
+            if(!GlobalProperties.ContainsKey(ReservedActionProperties.UtmCampaign) && IsAnon)
+            {
+                var campaign = request["utm_campaign"];
+                if(!string.IsNullOrEmpty(campaign))
+                {
+                    SetGlobalProperty(ReservedActionProperties.UtmCampaign, campaign);
+                }
+
+                var source = request["utm_source"];
+                if (!string.IsNullOrEmpty(source))
+                {
+                    SetGlobalProperty(ReservedActionProperties.UtmSource, source);
+                }
+
+                var medium = request["utm_medium"];
+                if (!string.IsNullOrEmpty(medium))
+                {
+                    SetGlobalProperty(ReservedActionProperties.UtmMedium, medium);
+                }
+
+                var content = request["utm_content"];
+                if (!string.IsNullOrEmpty(content))
+                {
+                    SetGlobalProperty(ReservedActionProperties.UtmContent, content);
+                }
+
+                var term = request["utm_term"];
+                if (!string.IsNullOrEmpty(term))
+                {
+                    SetGlobalProperty(ReservedActionProperties.UtmCampaign, term);
+                }
             }
         }
 
@@ -425,7 +469,7 @@ namespace Calq.Client.Web
             {
                 if(!IsAnon)
                 {
-                    throw (new ApiException("Identify must not be called more than once for the same user."));
+                    throw (new ApiException(String.Format("Identify must not be called more than once for the same user (Attempted to assign id '{0}' to identified user '{1}')", actor, Actor)));
                 }
                 
                 var oldActor = Actor;
@@ -450,7 +494,7 @@ namespace Calq.Client.Web
         /// Sets profile properties for the current user. These are not the same as global properties.
         /// A user must be identified before calling profile.
         /// </summary>
-        /// <param name="properties"></param>
+        /// <param name="properties">Dictionary containing the properties to set.</param>
         public void Profile(IDictionary<string, object> properties)
         {
             if (properties == null || properties.Count == 0)
@@ -501,10 +545,10 @@ namespace Calq.Client.Web
             if (!string.IsNullOrEmpty(xForwardedFor))
             {
                 var split = xForwardedFor.Split(',');
-                ipAddress = split[split.Length - 1];
+                ipAddress = split[split.Length - 1].Trim();
             }
 
-            // Test valid ip4/6 address (Don't trust the header)
+            // Test valid ip4/6 address (Don't trust the header's validity)
             IPAddress test;
             if (!IPAddress.TryParse(ipAddress, out test))
             {
