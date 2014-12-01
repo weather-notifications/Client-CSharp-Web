@@ -12,15 +12,10 @@
 
 namespace Calq.Client.Web
 {
-    public class ReservedActionProperties
+    public class ReservedProfileProperties
     {
-        public const string SaleValue = "$sale_value";
-        public const string SaleCurrency = "$sale_currency";
-
-        public const string DeviceAgent = "$device_agent";
-        public const string DeviceOs = "$device_os";
-        public const string DeviceResolution = "$device_resolution";
-        public const string DeviceMobile = "$device_mobile";
+        public const string FullName = "$full_name";
+        public const string ImageUrl = "$image_url";
 
         public const string Country = "$country";
         public const string Region = "$region";
@@ -29,10 +24,9 @@ namespace Calq.Client.Web
         public const string Gender = "$gender";
         public const string Age = "$age";
 
-        public const string UtmCampaign = "$utm_campaign";
-        public const string UtmSource = "$utm_source";
-        public const string UtmMedium = "$utm_medium";
-        public const string UtmContent = "$utm_content";
-        public const string UtmTerm = "$utm_term";
-     }
+        public const string Email = "$email";
+        public const string Phone = "$phone";
+        public const string SMS = "$sms";
+
+    }
 }
