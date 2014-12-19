@@ -236,40 +236,42 @@ namespace Calq.Client.Web
             try
             {
                 json = JsonConvert.DeserializeObject<dynamic>(decoded);
-
-                var actor = json.Property("actor");
-                if (actor != null && actor.Value != null)
+                if (json != null)
                 {
-                    var actorString = actor.Value.ToString();
-                    if (!string.IsNullOrEmpty(actorString))
+                    var actor = json.Property("actor");
+                    if (actor != null && actor.Value != null)
                     {
-                        // We MUST have recognised the actor node if we going to parse rest (else we would assign custom data to random ID)
-                        Actor = actorString;
-
-                        var globalNode = json.Property("actionGlobal");
-                        if (globalNode != null && globalNode.Value != null)
+                        var actorString = actor.Value.ToString();
+                        if (!string.IsNullOrEmpty(actorString))
                         {
-                            var globalProperties = new Dictionary<string, JToken>();
-                            FlattenJsonAttributes((JObject)globalNode.Value, (JObject)globalNode.Value, globalProperties);
-                            foreach(var key in globalProperties.Keys)
+                            // We MUST have recognised the actor node if we going to parse rest (else we would assign custom data to random ID)
+                            Actor = actorString;
+
+                            var globalNode = json.Property("actionGlobal");
+                            if (globalNode != null && globalNode.Value != null)
                             {
-                                if(!GlobalProperties.ContainsKey(key))
+                                var globalProperties = new Dictionary<string, JToken>();
+                                FlattenJsonAttributes((JObject)globalNode.Value, (JObject)globalNode.Value, globalProperties);
+                                foreach (var key in globalProperties.Keys)
                                 {
-                                    GlobalProperties.Add(key, globalProperties[key].ToString());
+                                    if (!GlobalProperties.ContainsKey(key))
+                                    {
+                                        GlobalProperties.Add(key, globalProperties[key].ToString());
+                                    }
                                 }
                             }
-                        }
 
-                        var hasActionNode = json.Property("hasAction");
-                        if (hasActionNode != null)
-                        {
-                            HasTracked = (bool)hasActionNode.Value;
-                        }
+                            var hasActionNode = json.Property("hasAction");
+                            if (hasActionNode != null)
+                            {
+                                HasTracked = (bool)hasActionNode.Value;
+                            }
 
-                        var isAnonNode = json.Property("isAnon");
-                        if (isAnonNode != null)
-                        {
-                            IsAnon = (bool)isAnonNode.Value;
+                            var isAnonNode = json.Property("isAnon");
+                            if (isAnonNode != null)
+                            {
+                                IsAnon = (bool)isAnonNode.Value;
+                            }
                         }
                     }
                 }
