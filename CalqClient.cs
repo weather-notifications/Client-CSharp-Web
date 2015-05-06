@@ -76,6 +76,8 @@ namespace Calq.Client.Web
         /// </summary>
         protected IDictionary<string, object> GlobalProperties;
 
+        private string actualIp;
+
         #region Creating Clients & Client State
 
         /// <summary>
@@ -460,6 +462,11 @@ namespace Calq.Client.Web
             }
         }
 
+        public void SetActualIp(string ip)
+        {
+            this.actualIp = ip;
+        }
+
         /// <summary>
         /// Sets the ID of this client to something else. This should be called if you register/sign-in a user and want
         /// to associate previously anonymous actions with this new identity.
@@ -536,6 +543,10 @@ namespace Calq.Client.Web
         /// </summary>
         protected string GetSourceIpAddress(HttpRequest request)
         {
+            if(!String.IsNullOrEmpty(this.actualIp))
+            {
+                return this.actualIp;
+            }
             // Get the submitted IP address from request (Use header if given, behind LB/proxy etc)
             var ipAddress = request.UserHostAddress;
             var xRealIp = request.Headers["X-Real-IP"];

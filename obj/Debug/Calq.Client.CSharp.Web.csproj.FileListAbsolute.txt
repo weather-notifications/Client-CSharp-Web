@@ -1,0 +1,6 @@
+C:\git\Client-CSharp-Web\bin\Debug\Calq.Client.Web.dll
+C:\git\Client-CSharp-Web\bin\Debug\Calq.Client.Web.pdb
+C:\git\Client-CSharp-Web\bin\Debug\Newtonsoft.Json.dll
+C:\git\Client-CSharp-Web\bin\Debug\Newtonsoft.Json.xml
+C:\git\Client-CSharp-Web\obj\Debug\Calq.Client.Web.dll
+C:\git\Client-CSharp-Web\obj\Debug\Calq.Client.Web.pdb
